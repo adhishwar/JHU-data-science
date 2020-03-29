@@ -1,0 +1,159 @@
+# Data Cleaning with R and the Tidyverse:
+# Detecting Missing Values
+#
+#
+# Instructions: 
+#   1) Download a copy of the dataset here: https://github.com/dataoptimal/posts/tree/master/data%20cleaning%20with%20R%20and%20the%20tidyverse
+#   2) Put the data in your working directory.
+#   3) Change the path_loc variable to your working directory location.
+#   4) Change the text file extension from .txt to .R
+
+
+library(tidyverse)
+
+# set working directory
+path_loc <- "C:/Users/Jonathan/Desktop/data cleaning with R post"
+setwd(path_loc)
+
+# reading in the data
+df <- read_csv("telecom.csv")
+
+# taking a quick look
+glimpse(df)
+
+
+#-----------------------------------------------------------------------
+# A Grammar of Data Manipulation: dplyr
+#-----------------------------------------------------------------------
+# filter on customers that churned
+df %>% 
+  filter(Churn=="yes")
+
+
+# nested functions
+log(sin(exp(2)))
+
+# piped functions
+2 %>% exp() %>% 
+  sin() %>% 
+  log()
+
+
+# filter on customers that churned,
+# select customerID and TotalCharges columns
+df %>% 
+  filter(Churn=="yes") %>% 
+  select(customerID, TotalCharges)
+
+
+
+#-----------------------------------------------------------------------
+# Standard Missing Values
+#-----------------------------------------------------------------------
+# looking at MonthlyCharges
+df$MonthlyCharges
+is.na(df$MonthlyCharges)
+
+# using the help function to learn about NA
+help(NA)
+
+# looking at the distinct values
+df %>% 
+  distinct(MonthlyCharges)
+
+# counting unique values  
+df %>% 
+  summarise(n = n_distinct(MonthlyCharges))
+
+# counting missing values
+df %>% 
+  summarise(count = sum(is.na(MonthlyCharges)))
+
+
+# counting unique, missing, and median values
+df %>% summarise(n = n_distinct(MonthlyCharges),
+                 na = sum(is.na(MonthlyCharges)),
+                 med = median(MonthlyCharges, na.rm = TRUE))
+
+
+# mutate missing values
+df %>% 
+  mutate(MonthlyCharges
+         = replace(MonthlyCharges,
+                   is.na(MonthlyCharges),
+                   median(MonthlyCharges, na.rm = TRUE)))
+
+
+# mutate missing values, and modify the dataframe
+df <- df %>% 
+  mutate(MonthlyCharges = replace(MonthlyCharges,
+                                  is.na(MonthlyCharges),
+                                  median(MonthlyCharges, na.rm = TRUE)))
+
+
+#-----------------------------------------------------------------------
+# Non-Standard Missing Values
+#-----------------------------------------------------------------------
+
+# looking at missing values
+df$TotalCharges
+is.na(df$TotalCharges)
+
+# counting missing values
+df %>% 
+  summarise(count = sum(is.na(TotalCharges)))
+
+# replacing with standard missing value type, NA
+df <- df %>% 
+  mutate(TotalCharges = replace(TotalCharges, TotalCharges == "na", NA)) %>% 
+  mutate(TotalCharges = replace(TotalCharges, TotalCharges == "N/A", NA))
+
+
+# taking another look
+df$TotalCharges
+is.na(df$TotalCharges)
+
+# taking a look at TotalCharges
+glimpse(df$TotalCharges)
+
+# changing to numeric type
+df$TotalCharges <- as.numeric(df$TotalCharges)
+glimpse(df$TotalCharges)
+
+
+# replace missing values with median
+df <- df %>% 
+  mutate(TotalCharges = replace(TotalCharges, 
+                                is.na(TotalCharges), 
+                                median(TotalCharges, na.rm = T)))
+df$TotalCharges
+
+# importing the data again
+df <- read_csv("telecom.csv")
+df$TotalCharges
+
+# change TotalCharges to numeric type
+df$TotalCharges <- as.numeric(df$TotalCharges)
+df$TotalCharges
+
+#-----------------------------------------------------------------------
+# More Missing Values
+#-----------------------------------------------------------------------
+
+# looking at PaymentMethod
+df$PaymentMethod
+is.na(df$PaymentMethod)
+
+# replacing "--" with NA
+df <- df %>% 
+  mutate(PaymentMethod = replace(PaymentMethod, PaymentMethod ==  "--", NA))
+is.na(df$PaymentMethod)
+df$PaymentMethod
+
+# replace NA with "unavailable"
+df <- df %>% 
+  mutate(PaymentMethod = replace(PaymentMethod, is.na(PaymentMethod), "unavailable"))
+
+df$PaymentMethod
+
+
