@@ -18,10 +18,7 @@ state_outcome_based_ranking <- function(state,out)
         stop('invalid outcome')
     
     #converts columns 3,4,5 into numeric type
-    for(i in c(3,4,5))
-    {
-        data_for_best[[i]] <- as.numeric(data_for_best[[i]])
-    }
+    data_for_best[,c(3,4,5)] <- apply(data_for_best[,c(3,4,5)], 2, as.numeric)
     
     #splits the data_for_best variable based on the values of the State variable. So now it is a list of 54 data frames
     data_for_best <- split(data_for_best,data_for_best$State)
