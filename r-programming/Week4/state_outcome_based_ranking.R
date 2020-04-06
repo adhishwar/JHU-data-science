@@ -27,7 +27,7 @@ state_outcome_based_ranking <- function(state,out,decreasing = F)
     state_specific_data <- data_for_best[[state]]
     
     #sorts the state_specific_data DF on the basis of mortality rate and hospital name
-    state_specific_data <- state_specific_data[order(state_specific_data[pos+2],state_specific_data[1], decreasing = c(decreasing,T)),c(1,2,pos+2)]
+    state_specific_data <- state_specific_data[order(state_specific_data[pos+2],state_specific_data[1], decreasing = c(decreasing,F)),c(1,2,pos+2)]
     
     state_specific_data
 }
