@@ -1,5 +1,5 @@
 # the following function takes a 2 letter abbreviated state name and outcome as input and returns a data frame that contains the state data
-state_outcome_based_ranking <- function(state,out)
+state_outcome_based_ranking <- function(state,out,decreasing = F)
 {
     #reads the data from the csv file
     outcome <- read.csv('rprog-data-ProgAssignment3-data/outcome-of-care-measures.csv',colClasses = 'character',na.strings='Not Available')
@@ -27,7 +27,7 @@ state_outcome_based_ranking <- function(state,out)
     state_specific_data <- data_for_best[[state]]
     
     #sorts the state_specific_data DF on the basis of mortality rate and hospital name
-    state_specific_data <- state_specific_data[order(state_specific_data[pos+2],state_specific_data[1]),c(1,2,pos+2)]
+    state_specific_data <- state_specific_data[order(state_specific_data[pos+2],state_specific_data[1], decreasing = c(decreasing,T)),c(1,2,pos+2)]
     
     state_specific_data
 }
