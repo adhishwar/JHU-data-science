@@ -6,19 +6,31 @@ state_outcome_based_ranking <- function(state,out,decreasing = F)
     
     possible_outcomes <- c('heart attack','heart failure','pneumonia')
     
-    #takes out only the relevant columns for this task and stores in a seperate object
-    data_for_best <- outcome[,c(2,7,11,17,23)]
-    rm(outcome)
-    
     #checks if the value of state and out correspond to valid states and outcomes
-    if(!state %in% data_for_best$State)
+    if(!state %in% outcome$State)
         stop('invalid state')
     pos <- match(out,possible_outcomes)
     if(is.na(pos))
         stop('invalid outcome')
     
+    if(pos==1){ col <- 11   
+    } else if(pos==2) { col <- 17
+    } else if(pos==3) { col <- 23
+    }
+
+    #takes out only the relevant columns for this task and stores in a seperate object
+    data_for_best <- outcome[,c(2,7,col)]
+    rm(outcome)
+    
+    # #checks if the value of state and out correspond to valid states and outcomes
+    # if(!state %in% data_for_best$State)
+    #     stop('invalid state')
+    # pos <- match(out,possible_outcomes)
+    # if(is.na(pos))
+    #     stop('invalid outcome')
+    
     #converts columns 3,4,5 into numeric type
-    data_for_best[,c(3,4,5)] <- apply(data_for_best[,c(3,4,5)], 2, as.numeric)
+    data_for_best[,3] <- as.numeric(data_for_best[,3])
     
     #splits the data_for_best variable based on the values of the State variable. So now it is a list of 54 data frames
     data_for_best <- split(data_for_best,data_for_best$State)
@@ -27,7 +39,7 @@ state_outcome_based_ranking <- function(state,out,decreasing = F)
     state_specific_data <- data_for_best[[state]]
     
     #sorts the state_specific_data DF on the basis of mortality rate and hospital name
-    state_specific_data <- state_specific_data[order(state_specific_data[pos+2],state_specific_data[1], decreasing = c(decreasing,F)),c(1,2,pos+2)]
+    state_specific_data <- state_specific_data[order(state_specific_data[,3],state_specific_data[,1], decreasing = c(decreasing,F)),]
     
     state_specific_data
 }
