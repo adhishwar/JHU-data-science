@@ -1,4 +1,5 @@
-# the following function takes a 2 letter abbreviated state name and outcome as input and returns a data frame that contains the state data
+# the following function takes a 2 letter abbreviated state name and outcome as input and returns a data frame that contains the state
+# data sorted by outcome and hospital name
 state_outcome_based_ranking <- function(state,out,decreasing = F)
 {
     #reads the data from the csv file
@@ -21,13 +22,6 @@ state_outcome_based_ranking <- function(state,out,decreasing = F)
     #takes out only the relevant columns for this task and stores in a seperate object
     data_for_best <- outcome[,c(2,7,col)]
     rm(outcome)
-    
-    # #checks if the value of state and out correspond to valid states and outcomes
-    # if(!state %in% data_for_best$State)
-    #     stop('invalid state')
-    # pos <- match(out,possible_outcomes)
-    # if(is.na(pos))
-    #     stop('invalid outcome')
     
     #converts columns 3,4,5 into numeric type
     data_for_best[,3] <- as.numeric(data_for_best[,3])
